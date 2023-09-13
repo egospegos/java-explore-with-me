@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 import java.util.Map;
 
 @Service
-public class StatsClient extends BaseClient{
+public class StatsClient extends BaseClient {
 
 
     @Autowired

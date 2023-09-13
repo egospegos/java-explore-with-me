@@ -1,10 +1,7 @@
 package ru.practicum.ewm.service;
 
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 import ru.practicum.ewm.dto.EndpointHitDto;
 import ru.practicum.ewm.dto.IViewStats;
-import ru.practicum.ewm.dto.ViewStats;
 
 import java.time.LocalDateTime;
 import java.util.List;

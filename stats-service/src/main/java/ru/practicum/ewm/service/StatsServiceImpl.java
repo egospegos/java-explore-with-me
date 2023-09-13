@@ -3,7 +3,10 @@ package ru.practicum.ewm.service;
 import lombok.RequiredArgsConstructor;
 import org.mapstruct.factory.Mappers;
 import org.springframework.stereotype.Service;
-import ru.practicum.ewm.dto.*;
+import ru.practicum.ewm.dto.EndpointHit;
+import ru.practicum.ewm.dto.EndpointHitDto;
+import ru.practicum.ewm.dto.EndpointHitMapper;
+import ru.practicum.ewm.dto.IViewStats;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -29,16 +32,13 @@ public class StatsServiceImpl implements StatsService {
         if (unique) {
             if (uri.isEmpty()) {
                 return statsRepository.findAllWithUniqueIp(start, end);
-            }
-            else {
+            } else {
                 return statsRepository.findByUriWithUniqueIp(start, end, uri);
             }
-        }
-        else {
+        } else {
             if (uri.isEmpty()) {
                 return statsRepository.findAllWithNonUniqueIp(start, end);
-            }
-            else {
+            } else {
                 return statsRepository.findByUriWithNonUniqueIp(start, end, uri);
             }
         }
