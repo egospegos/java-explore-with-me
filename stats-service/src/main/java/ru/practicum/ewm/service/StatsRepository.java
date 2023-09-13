@@ -19,9 +19,9 @@ public interface StatsRepository extends JpaRepository<EndpointHit, Long> {
 
     @Query(value = "select h.app as app, h.uri as uri, COUNT(distinct h.ip) as hits " +
             "from hits as h " +
-            "where h.uri = ?3 AND h.created >= ?1 AND h.created <= ?2 " +
+            "where h.uri IN (?3) AND h.created >= ?1 AND h.created <= ?2 " +
             "group by h.app, h.uri", nativeQuery = true)
-    List<IViewStats> findByUriWithUniqueIp(LocalDateTime start, LocalDateTime end, String uri);
+    List<IViewStats> findByUriWithUniqueIp(LocalDateTime start, LocalDateTime end, List<String> uri);
 
     @Query(value = "select h.app as app, h.uri as uri, COUNT(h.ip) as hits " +
             "from hits as h " +
@@ -31,7 +31,7 @@ public interface StatsRepository extends JpaRepository<EndpointHit, Long> {
 
     @Query(value = "select h.app as app, h.uri as uri, COUNT(h.ip) as hits " +
             "from hits as h " +
-            "where h.uri = ?3 AND h.created >= ?1 AND h.created <= ?2 " +
+            "where h.uri IN (?3) AND h.created >= ?1 AND h.created <= ?2 " +
             "group by h.app, h.uri", nativeQuery = true)
-    List<IViewStats> findByUriWithNonUniqueIp(LocalDateTime start, LocalDateTime end, String uri);
+    List<IViewStats> findByUriWithNonUniqueIp(LocalDateTime start, LocalDateTime end, List<String> uri);
 }

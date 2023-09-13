@@ -1,9 +1,11 @@
 package ru.practicum.ewm.dto;
 
+import java.util.List;
+
 public interface IViewStats {
     String getApp();
 
-    String getUri();
+    List<String> getUri();
 
     Integer getHits();
 }

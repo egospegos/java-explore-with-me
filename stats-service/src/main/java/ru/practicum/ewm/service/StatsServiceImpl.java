@@ -28,7 +28,7 @@ public class StatsServiceImpl implements StatsService {
     }
 
     @Override
-    public List<IViewStats> viewStats(LocalDateTime start, LocalDateTime end, String uri, boolean unique) {
+    public List<IViewStats> viewStats(LocalDateTime start, LocalDateTime end, List<String> uri, boolean unique) {
         if (unique) {
             if (uri.isEmpty()) {
                 return statsRepository.findAllWithUniqueIp(start, end);
