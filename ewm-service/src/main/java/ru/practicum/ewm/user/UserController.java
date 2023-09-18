@@ -23,12 +23,10 @@ public class UserController {
     }
 
 
-
     @PostMapping
     public UserDto create(@RequestBody UserDto userDto) {
         return userService.create(userDto);
     }
-
 
 
     @DeleteMapping("/{id}")

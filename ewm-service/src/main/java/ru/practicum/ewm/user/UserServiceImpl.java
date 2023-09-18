@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Service
-public class UserServiceImpl implements UserService{
+public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
     @Autowired
@@ -28,8 +28,7 @@ public class UserServiceImpl implements UserService{
         if (ids.isEmpty()) {
             users = userRepository.findAllWithPagination(PageRequest.of(Math.toIntExact(start), Math.toIntExact(size),
                     Sort.by("id").descending())).getContent();
-        }
-        else {
+        } else {
             users = userRepository.findByIdsWithPagination(ids, PageRequest.of(Math.toIntExact(start), Math.toIntExact(size),
                     Sort.by("id").descending())).getContent();
         }
