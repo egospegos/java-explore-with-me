@@ -27,10 +27,10 @@ public class UserServiceImpl implements UserService {
         long start = from / size;
         if (ids.isEmpty()) {
             users = userRepository.findAllWithPagination(PageRequest.of(Math.toIntExact(start), Math.toIntExact(size),
-                    Sort.by("id").descending())).getContent();
+                    Sort.by("id").ascending())).getContent();
         } else {
             users = userRepository.findByIdsWithPagination(ids, PageRequest.of(Math.toIntExact(start), Math.toIntExact(size),
-                    Sort.by("id").descending())).getContent();
+                    Sort.by("id").ascending())).getContent();
         }
         UserMapper mapper = Mappers.getMapper(UserMapper.class);
         List<UserDto> usersDto = new ArrayList<>();
@@ -58,6 +58,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void delete(long userId) {
+        validateId(userId);
+        userRepository.deleteById(userId);
+    }
+
+    private void validateId(Long userId) {
         userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalStateException("Wrong user id=" + userId));
     }

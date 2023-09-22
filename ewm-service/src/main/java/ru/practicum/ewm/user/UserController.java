@@ -1,12 +1,18 @@
 package ru.practicum.ewm.user;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.ewm.util.common.Marker;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
 @RequestMapping(path = "/admin/users")
+@Validated
 public class UserController {
     private final UserService userService;
 
@@ -24,12 +30,14 @@ public class UserController {
 
 
     @PostMapping
-    public UserDto create(@RequestBody UserDto userDto) {
-        return userService.create(userDto);
+    @Validated({Marker.OnCreate.class})
+    public ResponseEntity<UserDto> create(@RequestBody @Valid UserDto userDto) {
+        return new ResponseEntity<>(userService.create(userDto), HttpStatus.CREATED);
     }
 
 
     @DeleteMapping("/{id}")
+    @ResponseStatus(value = HttpStatus.NO_CONTENT)
     public void delete(@PathVariable long id) {
         userService.delete(id);
     }
