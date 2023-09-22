@@ -57,7 +57,7 @@ public interface EventMapper {
     @Mapping(target = "title", source = "entity.title")
     @Mapping(target = "category", source = "entity.category")
     @Mapping(target = "location", source = "entity.location")
-    EventFullDto UpdateEventUserRequestToEventFullDto(UpdateEventUserRequest entity);
+    EventFullDto updateEventUserRequestToEventFullDto(UpdateEventUserRequest entity);
 
     @Mapping(target = "annotation", source = "entity.annotation")
     @Mapping(target = "description", source = "entity.description")
@@ -68,5 +68,5 @@ public interface EventMapper {
     @Mapping(target = "title", source = "entity.title")
     @Mapping(target = "category", source = "entity.category")
     @Mapping(target = "location", source = "entity.location")
-    EventFullDto UpdateEventAdminRequestToEventFullDto(UpdateEventAdminRequest entity);
+    EventFullDto updateEventAdminRequestToEventFullDto(UpdateEventAdminRequest entity);
 }

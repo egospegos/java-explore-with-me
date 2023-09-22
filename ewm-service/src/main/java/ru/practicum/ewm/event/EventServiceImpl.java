@@ -31,8 +31,8 @@ public class EventServiceImpl implements EventService {
     @Override
     public EventFullDto createEventPrivate(NewEventDto newEventDto, long userId) {
         Event event = eventMapper.newEventDtoToEvent(newEventDto);
-        event.setCategory(categoryRepository.findById(newEventDto.getCategoryId()).
-                orElseThrow(() -> new IllegalStateException("Wrong category id=" + newEventDto.getCategoryId())));
+        event.setCategory(categoryRepository.findById(newEventDto.getCategoryId())
+                .orElseThrow(() -> new IllegalStateException("Wrong category id=" + newEventDto.getCategoryId())));
         event.setCreatedOn(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
 
 

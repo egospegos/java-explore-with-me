@@ -19,5 +19,5 @@ public interface CompilationMapper {
 
     @Mapping(target = "pinned", source = "entity.pinned")
     @Mapping(target = "title", source = "entity.title")
-    CompilationDto UpdateCompilationRequestToCompilationDto(UpdateCompilationRequest entity);
+    CompilationDto updateCompilationRequestToCompilationDto(UpdateCompilationRequest entity);
 }
