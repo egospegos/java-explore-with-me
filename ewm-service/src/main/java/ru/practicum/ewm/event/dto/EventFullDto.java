@@ -3,8 +3,12 @@ package ru.practicum.ewm.event.dto;
 import lombok.Data;
 import ru.practicum.ewm.category.Category;
 import ru.practicum.ewm.event.State;
+import ru.practicum.ewm.event.comment.CommentDto;
 import ru.practicum.ewm.event.location.Location;
 import ru.practicum.ewm.user.User;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 public class EventFullDto {
@@ -40,4 +44,5 @@ public class EventFullDto {
     private User initiator;
 
     private Location location;
+    private List<CommentDto> comments = new ArrayList<>();
 }

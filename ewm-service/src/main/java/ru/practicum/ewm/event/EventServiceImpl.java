@@ -9,6 +9,10 @@ import ru.practicum.ewm.category.Category;
 import ru.practicum.ewm.category.CategoryRepository;
 import ru.practicum.ewm.client.StatsClient;
 import ru.practicum.ewm.dto.EndpointHitDto;
+import ru.practicum.ewm.event.comment.Comment;
+import ru.practicum.ewm.event.comment.CommentDto;
+import ru.practicum.ewm.event.comment.CommentMapper;
+import ru.practicum.ewm.event.comment.CommentRepository;
 import ru.practicum.ewm.event.dto.*;
 import ru.practicum.ewm.event.location.LocationRepository;
 import ru.practicum.ewm.exception.DublicateException;
@@ -20,6 +24,7 @@ import ru.practicum.ewm.request.Status;
 import ru.practicum.ewm.request.dto.EventRequestStatusUpdateRequest;
 import ru.practicum.ewm.request.dto.EventRequestStatusUpdateResult;
 import ru.practicum.ewm.request.dto.ParticipationRequestDto;
+import ru.practicum.ewm.user.User;
 import ru.practicum.ewm.user.UserRepository;
 
 import javax.servlet.http.HttpServletRequest;
@@ -38,10 +43,12 @@ public class EventServiceImpl implements EventService {
     private final CategoryRepository categoryRepository;
     private final LocationRepository locationRepository;
     private final RequestRepository requestRepository;
+    private final CommentRepository commentRepository;
     private final StatsClient statsClient;
 
     private final EventMapper eventMapper = Mappers.getMapper(EventMapper.class);
     private final RequestMapper requestMapper = Mappers.getMapper(RequestMapper.class);
+    private final CommentMapper commentMapper = Mappers.getMapper(CommentMapper.class);
 
 
     @Override
@@ -358,14 +365,11 @@ public class EventServiceImpl implements EventService {
         String start = LocalDateTime.now().minusYears(100).format(formatter);
         String end = LocalDateTime.now().format(formatter);
 
-
         List<LinkedHashMap> viewStats = (List<LinkedHashMap>) statsClient.viewStats(start, end, httpServletRequest.getRequestURI(), true).getBody();
-
 
         if (viewStats.size() > 0) {
             event.setViews((Integer) viewStats.get(0).get("hits"));
         }
-
 
         //отправить hit в статистику
         EndpointHitDto endpointHitDto = new EndpointHitDto();
@@ -374,6 +378,41 @@ public class EventServiceImpl implements EventService {
         endpointHitDto.setTimestamp(LocalDateTime.now());
         endpointHitDto.setIp(httpServletRequest.getRemoteAddr());
         statsClient.hit(endpointHitDto);
-        return eventMapper.eventToEventFullDto(event);
+
+        EventFullDto eventFullDto = eventMapper.eventToEventFullDto(event);
+
+        //проверка есть ли комментарии у события
+        List<Comment> comments = commentRepository.findAllByEventId(id);
+        if (comments.size() >= 1) {
+            for (Comment comment : comments) {
+                eventFullDto.getComments().add(commentMapper.commentToCommentDto(comment));
+            }
+        }
+        return eventFullDto;
+    }
+
+    @Override
+    public CommentDto createCommentToEvent(CommentDto commentDto, long userId, long eventId) {
+        //есть ли такое событие, чтоб коммент оставить
+        Event event = eventRepository.findById(eventId)
+                .orElseThrow(() -> new IllegalStateException("Wrong event id=" + eventId));
+        //есть ли такой пользователь
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalStateException("Wrong user id=" + userId));
+        //был ли такой пользователь на мероприятии
+        Request request = requestRepository.findByEventIdAndUserId(eventId, userId);
+        if (request == null) {
+            throw new IllegalStateException("Пользователь id=" + userId + " не был на мероприятии id=" + eventId);
+        }
+
+
+        //маппинг
+        Comment comment = commentMapper.commentDtoToComment(commentDto);
+        comment.setEvent(event);
+        comment.setAuthor(user);
+        comment.setCreated(LocalDateTime.now());
+
+        //маппинг перед отправкой назад
+        return commentMapper.commentToCommentDto(commentRepository.save(comment));
     }
 }
