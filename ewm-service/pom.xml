@@ -61,13 +61,6 @@
             <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
 
-
-        <dependency>
-            <groupId>org.example</groupId>
-            <artifactId>stats-service</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-            <scope>compile</scope>
-        </dependency>
         <dependency>
             <groupId>org.example</groupId>
             <artifactId>client</artifactId>
