@@ -2,12 +2,14 @@ package ru.practicum.ewm.category;
 
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import ru.practicum.ewm.event.Event;
+import ru.practicum.ewm.event.EventRepository;
 import ru.practicum.ewm.exception.DublicateException;
 
-import javax.validation.ConstraintViolationException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,10 +17,12 @@ import java.util.List;
 public class CategoryServiceImpl implements CategoryService {
 
     private final CategoryRepository categoryRepository;
+    private final EventRepository eventRepository;
 
     @Autowired
-    public CategoryServiceImpl(CategoryRepository categoryRepository) {
+    public CategoryServiceImpl(CategoryRepository categoryRepository, EventRepository eventRepository) {
         this.categoryRepository = categoryRepository;
+        this.eventRepository = eventRepository;
     }
 
     @Override
@@ -54,8 +58,9 @@ public class CategoryServiceImpl implements CategoryService {
         CategoryMapper mapper = Mappers.getMapper(CategoryMapper.class);
         Category category = mapper.categoryDtoToCategory(categoryDto);
         try {
-            return mapper.categoryToCategoryDto(categoryRepository.save(category));
-        } catch (ConstraintViolationException e) {
+            Category categoryFromRepo = categoryRepository.save(category);
+            return mapper.categoryToCategoryDto(categoryFromRepo);
+        } catch (DataIntegrityViolationException e) {
             throw new DublicateException(String.format(
                     "Категория %s уже зарегистрирована", category.getName()
             ));
@@ -68,9 +73,11 @@ public class CategoryServiceImpl implements CategoryService {
         CategoryMapper mapper = Mappers.getMapper(CategoryMapper.class);
         Category category = mapper.categoryDtoToCategory(categoryDto);
         category.setId(categoryRepository.findById(id).get().getId());
+
+
         try {
             return mapper.categoryToCategoryDto(categoryRepository.save(category));
-        } catch (ConstraintViolationException e) {
+        } catch (DataIntegrityViolationException e) {
             throw new DublicateException(String.format(
                     "Категория %s уже зарегистрирована", category.getName()
             ));
@@ -80,6 +87,11 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public void delete(long id) {
         validateId(id);
+        List<Event> events = eventRepository.findAllEventsByCategoryId(id);
+        if (events.size() > 0) {
+            throw new DublicateException("У категории есть привязанные события");
+        }
+
         categoryRepository.deleteById(id);
     }
 

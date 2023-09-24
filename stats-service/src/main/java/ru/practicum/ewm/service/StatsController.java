@@ -2,6 +2,7 @@ package ru.practicum.ewm.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.ewm.dto.EndpointHitDto;
 import ru.practicum.ewm.dto.IViewStats;
@@ -20,6 +21,7 @@ public class StatsController {
 
 
     @PostMapping("/hit")
+    @ResponseStatus(HttpStatus.CREATED)
     public EndpointHitDto hit(@RequestBody EndpointHitDto endpointHitDto) {
         return statsService.addHit(endpointHitDto);
     }

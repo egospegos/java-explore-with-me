@@ -4,7 +4,6 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import ru.practicum.ewm.compilation.dto.CompilationDto;
 import ru.practicum.ewm.compilation.dto.NewCompilationDto;
-import ru.practicum.ewm.compilation.dto.UpdateCompilationRequest;
 
 @Mapper
 public interface CompilationMapper {
@@ -17,7 +16,4 @@ public interface CompilationMapper {
     @Mapping(target = "title", source = "entity.title")
     CompilationDto compilationToCompilationDto(Compilation entity);
 
-    @Mapping(target = "pinned", source = "entity.pinned")
-    @Mapping(target = "title", source = "entity.title")
-    CompilationDto updateCompilationRequestToCompilationDto(UpdateCompilationRequest entity);
 }

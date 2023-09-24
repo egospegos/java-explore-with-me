@@ -33,21 +33,21 @@ CREATE TABLE IF NOT EXISTS compilations (
 
 CREATE TABLE IF NOT EXISTS events (
   id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-  annotation VARCHAR(255) NOT NULL,
+  annotation VARCHAR(2000) NOT NULL,
   category_id BIGINT, --category
   compilation_id BIGINT, --compilation
   confirmed_requests BIGINT,
-  created_on timestamp,
-  description VARCHAR(512),
-  event_date timestamp,
+  created_on varchar(50),
+  description VARCHAR(7000),
+  event_date varchar(50),
   initiator_id BIGINT, --initiator
   location_id BIGINT, --location
   paid BOOLEAN NOT NULL,
   participant_limit BIGINT,
-  published_on timestamp,
+  published_on varchar(50),
   request_moderation BOOLEAN,
   state varchar(50),
-  title VARCHAR(255) NOT NULL,
+  title VARCHAR(512) NOT NULL,
   views BIGINT,
 
   CONSTRAINT fk_events_to_users FOREIGN KEY(initiator_id) REFERENCES users(id),

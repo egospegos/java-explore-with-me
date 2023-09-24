@@ -55,7 +55,8 @@ public class CompilationController {
     }
 
     @PatchMapping("/admin/compilations/{compId}")
-    public CompilationDto updateCompilationAdmin(@PathVariable long compId, @RequestBody UpdateCompilationRequest updateCompilationRequest) {
+    @Validated({Marker.OnUpdate.class})
+    public CompilationDto updateCompilationAdmin(@PathVariable long compId, @RequestBody @Valid UpdateCompilationRequest updateCompilationRequest) {
         return compilationService.updateCompilationAdmin(compId, updateCompilationRequest);
     }
 

@@ -2,12 +2,12 @@ package ru.practicum.ewm.user;
 
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.practicum.ewm.exception.DublicateException;
 
-import javax.validation.ConstraintViolationException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,7 +49,7 @@ public class UserServiceImpl implements UserService {
         User user = mapper.userDtoToUser(userDto);
         try {
             return mapper.userToUserDto(userRepository.save(user));
-        } catch (ConstraintViolationException e) {
+        } catch (DataIntegrityViolationException e) {
             throw new DublicateException(String.format(
                     "Пользователь с %s уже зарегистрирован", user.getEmail()
             ));

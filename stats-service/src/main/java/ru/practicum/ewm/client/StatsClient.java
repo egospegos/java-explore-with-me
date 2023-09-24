@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 import ru.practicum.ewm.dto.EndpointHitDto;
 
-import java.time.LocalDateTime;
 import java.util.Map;
 
 @Service
@@ -30,7 +29,7 @@ public class StatsClient extends BaseClient {
         return post("/hit", endpointHitDto);
     }
 
-    public ResponseEntity<Object> viewStats(LocalDateTime start, LocalDateTime end, String uri, Boolean unique) {
+    public ResponseEntity<Object> viewStats(String start, String end, String uri, Boolean unique) {
         Map<String, Object> parameters = Map.of(
                 "start", start,
                 "end", end,

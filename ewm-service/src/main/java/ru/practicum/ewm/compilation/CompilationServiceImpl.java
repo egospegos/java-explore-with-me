@@ -69,16 +69,21 @@ public class CompilationServiceImpl implements CompilationService {
 
     @Override
     public CompilationDto create(NewCompilationDto newCompilationDto) {
+        if (newCompilationDto.getPinned() == null) {
+            newCompilationDto.setPinned(false);
+        }
         Compilation compilation = compilationRepository.save(compilationMapper.newCompilationDtoToCompilation(newCompilationDto));
         CompilationDto compilationDto = compilationMapper.compilationToCompilationDto(compilation);
-        for (Long eventId : newCompilationDto.getEvents()) {
-            Event event = eventRepository.findById(eventId)
-                    .orElseThrow(() -> new IllegalStateException("Wrong event id=" + eventId));
-            event.setCompilation(compilation);
-            eventRepository.save(event);
-            compilationDto.getEvents().add(eventMapper.eventToEventShortDto(event));
-
+        if (newCompilationDto.getEvents() != null) {
+            for (Long eventId : newCompilationDto.getEvents()) {
+                Event event = eventRepository.findById(eventId)
+                        .orElseThrow(() -> new IllegalStateException("Wrong event id=" + eventId));
+                event.setCompilation(compilation);
+                eventRepository.save(event);
+                compilationDto.getEvents().add(eventMapper.eventToEventShortDto(event));
+            }
         }
+
         return compilationDto;
     }
 
@@ -96,6 +101,13 @@ public class CompilationServiceImpl implements CompilationService {
         }
         if (updateCompilationRequest.getPinned() != null) {
             compilation.setPinned(updateCompilationRequest.getPinned());
+        }
+        if (updateCompilationRequest.getEvents() != null) {
+            List<Event> events = eventRepository.findAllEventsByIds(updateCompilationRequest.getEvents());
+            for (Event event : events) {
+                event.setCompilation(compilation);
+                eventRepository.save(event);
+            }
         }
         return compilationMapper.compilationToCompilationDto(compilationRepository.save(compilation));
     }

@@ -24,7 +24,7 @@ public class Event {
     @Column(nullable = false)
     private String annotation;
     @Column(name = "confirmed_requests")
-    private long confirmedRequests;
+    private Long confirmedRequests;
     @Column(name = "created_on")
     private String createdOn;
     @Column
@@ -49,7 +49,7 @@ public class Event {
 
     @ManyToOne
     @JoinColumn(name = "category_id")
-    private Category category;
+    private Category categoryEntity;
 
     @ManyToOne
     @JoinColumn(name = "initiator_id")

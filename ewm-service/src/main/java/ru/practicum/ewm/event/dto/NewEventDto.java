@@ -17,7 +17,7 @@ public class NewEventDto {
     @Length(groups = {Marker.OnCreate.class}, min = 20, max = 2000)
     private String annotation;
     @NotNull(groups = {Marker.OnCreate.class})
-    private long categoryId;
+    private Long category;
     @NotBlank(groups = {Marker.OnCreate.class})
     @Length(groups = {Marker.OnCreate.class}, min = 20, max = 7000)
     private String description;
@@ -29,7 +29,7 @@ public class NewEventDto {
 
     private boolean paid;
     private long participantLimit;
-    private boolean requestModeration;
+    private boolean requestModeration = true;
 
     @NotBlank(groups = {Marker.OnCreate.class})
     @Length(groups = {Marker.OnCreate.class}, min = 3, max = 120)

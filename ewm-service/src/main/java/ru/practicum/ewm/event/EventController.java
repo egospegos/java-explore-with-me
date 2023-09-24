@@ -7,9 +7,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.ewm.event.dto.*;
+import ru.practicum.ewm.request.dto.EventRequestStatusUpdateRequest;
 import ru.practicum.ewm.request.dto.EventRequestStatusUpdateResult;
+import ru.practicum.ewm.request.dto.ParticipationRequestDto;
 import ru.practicum.ewm.util.common.Marker;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -48,37 +51,38 @@ public class EventController {
     @PatchMapping("/users/{userId}/events/{eventId}")
     @Validated({Marker.OnUpdate.class})
     public EventFullDto updateEventPrivate(@PathVariable long userId, @PathVariable long eventId,
-                                           @RequestBody UpdateEventUserRequest updateEvent) {
+                                           @RequestBody @Valid UpdateEventUserRequest updateEvent) {
         return eventService.updateEventPrivate(updateEvent, eventId, userId);
     }
 
     @GetMapping("/users/{userId}/events/{eventId}/requests")
-    public List<EventFullDto> getAllEventRequestsPrivate() {
-        return null;
+    public List<ParticipationRequestDto> getAllEventRequestsPrivate(@PathVariable long userId, @PathVariable long eventId) {
+        return eventService.getAllEventRequestsPrivate(userId, eventId);
     }
 
     @PatchMapping("/users/{userId}/events/{eventId}/requests")
-    @Validated({Marker.OnUpdate.class})
-    public EventRequestStatusUpdateResult updateEventRequestsPrivate() {
-        return null;
+    public EventRequestStatusUpdateResult updateEventRequestsPrivate(@PathVariable long userId, @PathVariable long eventId,
+                                                                     @RequestBody EventRequestStatusUpdateRequest updateRequestStatus) {
+        return eventService.updateEventRequestsPrivate(userId, eventId, updateRequestStatus);
     }
 
 
     //ADMIN-----------------------------------------------------------
 
     @GetMapping("/admin/events")
-    public List<EventFullDto> getAllEventsAdmin(@RequestParam(defaultValue = "") List<Integer> users,
-                                                @RequestParam(defaultValue = "") List<String> states,
-                                                @RequestParam(defaultValue = "") List<Integer> categories,
-                                                @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeStart,
-                                                @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeEnd,
+    public List<EventFullDto> getAllEventsAdmin(@RequestParam(required = false) List<Integer> users,
+                                                @RequestParam(required = false) List<String> states,
+                                                @RequestParam(required = false) List<Integer> categories,
+                                                @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeStart,
+                                                @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeEnd,
                                                 @RequestParam(defaultValue = "0") Long from,
                                                 @RequestParam(defaultValue = "10") Long size) {
         return eventService.getAllEventsAdmin(users, states, categories, rangeStart, rangeEnd, from, size);
     }
 
     @PatchMapping("/admin/events/{eventId}")
-    public EventFullDto updateEventAdmin(@PathVariable long eventId, @RequestBody UpdateEventAdminRequest updateEvent) {
+    @Validated({Marker.OnUpdate.class})
+    public EventFullDto updateEventAdmin(@PathVariable long eventId, @RequestBody @Valid UpdateEventAdminRequest updateEvent) {
         return eventService.updateEventAdmin(updateEvent, eventId);
     }
 
@@ -86,13 +90,23 @@ public class EventController {
     //PUBLIC---------------------------------------------------------
 
     @GetMapping("/events")
-    public List<EventShortDto> getAllEventsPublic() {
-        return null;
+    public List<EventShortDto> getAllEventsPublic(@RequestParam(required = false) String text,
+                                                  @RequestParam(required = false) List<Integer> categories,
+                                                  @RequestParam(required = false) Boolean paid,
+                                                  @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeStart,
+                                                  @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime rangeEnd,
+                                                  @RequestParam(defaultValue = "false") Boolean onlyAvailable,
+                                                  @RequestParam(defaultValue = "") String sort,
+                                                  @RequestParam(defaultValue = "0") Long from,
+                                                  @RequestParam(defaultValue = "10") Long size,
+                                                  HttpServletRequest httpServletRequest) {
+
+        return eventService.getAllEventsPublic(text, categories, paid, rangeStart, rangeEnd, onlyAvailable, sort, from, size, httpServletRequest);
     }
 
     @GetMapping("/events/{id}")
-    public EventFullDto getEventByIdPublic(@PathVariable long id) {
-        return eventService.getEventByIdPublic(id);
+    public EventFullDto getEventByIdPublic(@PathVariable long id, HttpServletRequest httpServletRequest) {
+        return eventService.getEventByIdPublic(id, httpServletRequest);
     }
 
 

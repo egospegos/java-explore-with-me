@@ -2,7 +2,9 @@ package ru.practicum.ewm.service;
 
 import lombok.RequiredArgsConstructor;
 import org.mapstruct.factory.Mappers;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 import ru.practicum.ewm.dto.EndpointHit;
 import ru.practicum.ewm.dto.EndpointHitDto;
 import ru.practicum.ewm.dto.EndpointHitMapper;
@@ -29,6 +31,9 @@ public class StatsServiceImpl implements StatsService {
 
     @Override
     public List<IViewStats> viewStats(LocalDateTime start, LocalDateTime end, List<String> uri, boolean unique) {
+        if (start.isAfter(end)) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Start is after end");
+        }
         if (unique) {
             if (uri.isEmpty()) {
                 return statsRepository.findAllWithUniqueIp(start, end);
