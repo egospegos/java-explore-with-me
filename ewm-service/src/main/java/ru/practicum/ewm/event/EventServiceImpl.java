@@ -7,7 +7,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.practicum.ewm.category.Category;
 import ru.practicum.ewm.category.CategoryRepository;
-
 import ru.practicum.ewm.client.StatsClient;
 import ru.practicum.ewm.dto.EndpointHitDto;
 import ru.practicum.ewm.event.dto.*;
