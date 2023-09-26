@@ -1,5 +1,6 @@
 package ru.practicum.ewm.event;
 
+import ru.practicum.ewm.event.comment.CommentDto;
 import ru.practicum.ewm.event.dto.*;
 import ru.practicum.ewm.request.dto.EventRequestStatusUpdateRequest;
 import ru.practicum.ewm.request.dto.EventRequestStatusUpdateResult;
@@ -35,5 +36,5 @@ public interface EventService {
 
     EventFullDto getEventByIdPublic(long id, HttpServletRequest httpServletRequest);
 
-
+    CommentDto createCommentToEvent(CommentDto commentDto, long userId, long eventId);
 }

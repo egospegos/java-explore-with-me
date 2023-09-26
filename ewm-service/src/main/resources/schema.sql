@@ -1,3 +1,4 @@
+DROP TABLE IF EXISTS comments;
 DROP TABLE IF EXISTS requests;
 DROP TABLE IF EXISTS events;
 DROP TABLE IF EXISTS compilations;
@@ -66,4 +67,14 @@ CREATE TABLE IF NOT EXISTS requests (
 
   CONSTRAINT fk_requests_to_users FOREIGN KEY(requester_id) REFERENCES users(id),
   CONSTRAINT fk_requests_to_events FOREIGN KEY(event_id) REFERENCES events(id)
+);
+
+CREATE TABLE IF NOT EXISTS comments (
+  id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+  text VARCHAR(7000) NOT NULL,
+  event_id BIGINT,
+  author_id BIGINT,
+  created timestamp,
+  CONSTRAINT fk_comments_to_events FOREIGN KEY(event_id) REFERENCES events(id),
+  CONSTRAINT fk_comments_to_users FOREIGN KEY(author_id) REFERENCES users(id)
 );

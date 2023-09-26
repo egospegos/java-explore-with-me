@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import ru.practicum.ewm.event.comment.CommentDto;
 import ru.practicum.ewm.event.dto.*;
 import ru.practicum.ewm.request.dto.EventRequestStatusUpdateRequest;
 import ru.practicum.ewm.request.dto.EventRequestStatusUpdateResult;
@@ -64,6 +65,13 @@ public class EventController {
     public EventRequestStatusUpdateResult updateEventRequestsPrivate(@PathVariable long userId, @PathVariable long eventId,
                                                                      @RequestBody EventRequestStatusUpdateRequest updateRequestStatus) {
         return eventService.updateEventRequestsPrivate(userId, eventId, updateRequestStatus);
+    }
+
+    @PostMapping("/users/{userId}/events/{eventId}/comments")
+    @Validated({Marker.OnCreate.class})
+    public ResponseEntity<CommentDto> createCommentToEvent(@PathVariable long userId, @PathVariable long eventId,
+                                                           @RequestBody @Valid CommentDto commentDto) {
+        return new ResponseEntity<>(eventService.createCommentToEvent(commentDto, userId, eventId), HttpStatus.CREATED);
     }
 
 
